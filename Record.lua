@@ -27,6 +27,7 @@ if not sprite.filename then
 end
 
 local fileIncrement = 0
+local mainDlg = Dialog("Record v1.0")
 
 -- Get file path separator, \ for Windows and / for everything else
 local pathSeparator = sprite.filename:sub(1,1) == "/" and "/" or "\\"
@@ -69,18 +70,14 @@ function initialize()
     mainDlg:show{ wait=false }
 end
 
--- Creates the base dialog box
-local mainDlg = Dialog("Record v1.0")
-local bounds = mainDlg.bounds
-mainDlg.bounds = Rectangle(bounds.x, bounds.y, 128, 128)
-mainDlg:button{
-    text = "Open Recording",
-    onclick = function() print("henlo") end
-}
-mainDlg:separator()
+-- Creates the main dialog box
 mainDlg:button{
     text = "Take Snapshot",
     onclick = function() writeSnapshot() end
+}
+mainDlg:button{
+    text = "Open folder",
+    onclick = function() print("henlo") end
 }
 
 initialize()
