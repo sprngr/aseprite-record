@@ -1,9 +1,9 @@
 --[[
-    Aseprite Time Lapse v0.1
+    Aseprite Recorder v0.1
     Author: Michael Springer (@sprngr_)
 
-    Records a time lapse by writing snapshots to a new file in sequence.
-    Can be imported as a group to aseprite as a gif.
+    Records a time lapse by writing snapshots to a directory.
+    Can be imported as a sequence to aseprite as a gif.
     Requires an active sprite to be opened to launch.
 ]]
 
@@ -65,38 +65,60 @@ function fileExists(name)
     if f~=nil then io.close(f) return true else return false end
 end
 
--- seconds = 180 --number of seconds in the timer
--- wait = 60  --time to wait
--- while true do
---   for i = seconds,1,-1 do
---     print(seconds)
---     sleep(1)
---    end
---    sleep(wait)
--- end
+-- Creates the base dialog box
+local mainDlg = Dialog("Aseprite Recorder v0.1")
+local recordDlg = Dialog("Aseprite Recorder v0.1")
 
--- Create dialog box
-local dlg = Dialog("Time Lapse v0.1")
-local bounds = dlg.bounds
-dlg.bounds = Rectangle(bounds.x, bounds.y, 256, 128)
-dlg:label{ 
-    id="timeLapseDirectory",
-    label="Save Location:",
-    text=generateFilename()
-}
-dlg:button{
+local bounds = mainDlg.bounds
+mainDlg.bounds = Rectangle(bounds.x, bounds.y, 128, 128)
+mainDlg:button{
     text = "Take Snapshot",
     onclick = function() writeSnapshot() end
 }
-dlg:separator{}
-dlg:number{ 
+mainDlg:separator{}
+mainDlg:label{
+    text="Timer Delay (seconds):"
+}
+mainDlg:number{ 
     id="timeLapseInterval",
-    label="Timer Delay (seconds):",
     text="60",
     focus=true
 }
-dlg:separator{}
+mainDlg:button{
+    text = "Start Recording",
+    onclick = function() recordSprite(mainDlg.data.timeLapseInterval) end
+}
 
+recordDlg.bounds = mainDlg.bounds
+recordDlg:label{
+    text="Recording..."
+}
+recordDlg:button{
+    text = "Stop",
+    onclick = function() stopRecording() end
+}
+
+local isRecording = false
+
+function stopRecording()
+    isRecording = false
+    recordDlg:close()
+    mainDlg:show{ wait=false }
+end
+
+function recordSprite(interval)
+    mainDlg:close()
+    recordDlg:show{ wait=false }
+
+    local endTime = os.time() + interval
+
+    while isRecording do
+        if os.time() >= endTime then
+            writeSnapshot()
+            endTime = os.time() + interval
+        end
+    end
+end
 
 -- Determines the current interval value, then opens the dialog box
 function initialize()
@@ -109,7 +131,7 @@ function initialize()
             fileIncrement = fileIncrement + 1
         end
     end
-    dlg:show{ wait=false }
+    mainDlg:show{ wait=false }
 end
 
 initialize()
