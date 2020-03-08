@@ -41,7 +41,6 @@ function getFilePath()
 end
 
 function setupFileStrings(filename)
-    -- setup path separator
     setPathSep(filename)
     
     local pathTable = split(filename, getPathSep())

@@ -1,12 +1,9 @@
 --[[
-    Record v1.0
+    Record v1.0 - Record Now
     Author: Michael Springer (@sprngr_)
-
-    Records by writing snapshots to a directory.
-
-    Can be imported as a sequence into Aseprite to make a gif.
-    
-    Requires an active sprite.
+    License: MIT
+    Website: https://sprngr.itch.io/aseprite-record
+    Source: https://github.com/sprngr/aseprite-record
 ]]
 
 

@@ -1,12 +1,9 @@
 --[[
-    Record v1.0
+    Record v1.0 - Command Palette
     Author: Michael Springer (@sprngr_)
-
-    Records by writing snapshots to a directory.
-
-    Can be imported as a sequence into Aseprite to make a gif.
-    
-    Requires an active sprite.
+    License: MIT
+    Website: https://sprngr.itch.io/aseprite-record
+    Source: https://github.com/sprngr/aseprite-record
 ]]
 
 
@@ -15,9 +12,9 @@ dofile('.lib/record-core.lua')
 
 local sprite = nil
 local fileIncrement = 0
-local mainDlg = Dialog("Record")
+local mainDlg = Dialog("Record - v1.0")
 
-function init()
+function setSprite()
     sprite = app.activeSprite
     setupFileStrings(sprite.filename)
     setCurrentIncrement()
@@ -42,7 +39,7 @@ function checkSprite()
         return showError("No active sprite available.")
     elseif (sprite == nil or not sprite == app.activeSprite)
     then
-        return init()
+        return setSprite()
     end
 end
 
@@ -81,4 +78,4 @@ mainDlg:button{
         end
 }
 
-mainDlg:show()
+mainDlg:show{ wait=false } 
