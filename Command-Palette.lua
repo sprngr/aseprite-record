@@ -53,14 +53,17 @@ function paletteRecord()
     end
 end
 
-function openFolder()
+function openTimeLapse()
     checkSprite()
-
-    if sprite and fileExists(getSavePath()..getSaveFileName(0))
+    
+    if sprite
     then
-        app.command.OpenFile{filename=getSavePath()..getSaveFileName(0)}
-    else
-        showError("Need to record at least one snapshot to load time lapse.")
+        if fileExists(getSavePath()..getSaveFileName(0))
+        then
+            app.command.OpenFile{filename=getSavePath()..getSaveFileName(0)}
+        else
+            showError("Need to record at least one snapshot to load time lapse.")
+        end
     end
 end
 
@@ -76,7 +79,7 @@ mainDlg:button{
     text = "Open Time Lapse",
     onclick = 
         function() 
-            openFolder()
+            openTimeLapse()
         end
 }
 
