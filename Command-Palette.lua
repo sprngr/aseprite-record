@@ -56,22 +56,24 @@ end
 function openFolder()
     checkSprite()
 
-    if sprite
+    if sprite and fileExists(getSavePath()..getSaveFileName(0))
     then
-        app.command.openInFolder()
+        app.command.OpenFile{filename=getSavePath()..getSaveFileName(0)}
+    else
+        showError("Need to record at least one snapshot to load time lapse.")
     end
 end
 
 -- Creates the main dialog box
 mainDlg:button{
-    text = "Record Snapshot",
+    text = "Record Now",
     onclick = 
         function()
             paletteRecord()
         end
 }
 mainDlg:button{
-    text = "Open Folder",
+    text = "Open Time Lapse",
     onclick = 
         function() 
             openFolder()
