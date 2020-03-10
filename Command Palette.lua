@@ -37,13 +37,19 @@ function checkSprite()
     if not app.activeSprite
     then
         return showError("No active sprite available.")
-    elseif (sprite == nil or not sprite == app.activeSprite)
-    then
-        return setSprite()
-    end
+    else
+        local currentSprite = app.activeSprite
+
+        if not currentSprite.filename
+        then
+            return showError("Sprite needs to be saved before able to run record.")
+        elseif (sprite == nil or not sprite == currentSprite)
+        then
+            return setSprite()
+        end
 end
 
-function paletteRecord()
+function takeSnapshot()
     checkSprite()
 
     if sprite
@@ -69,10 +75,10 @@ end
 
 -- Creates the main dialog box
 mainDlg:button{
-    text = "Record Now",
+    text = "Take Snapshot",
     onclick = 
         function()
-            paletteRecord()
+            takeSnapshot()
         end
 }
 mainDlg:button{

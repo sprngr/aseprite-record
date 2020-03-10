@@ -24,9 +24,10 @@ function setCurrentIncrement()
     end
 end
 
-if app.activeSprite
+local sprite = app.activeSprite
+
+if sprite and sprite.filename 
 then
-    sprite = app.activeSprite
     setupFileStrings(sprite.filename)
     
     if fileExists(getSavePath()..getSaveFileName(0))
