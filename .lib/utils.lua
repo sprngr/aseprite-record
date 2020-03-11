@@ -54,9 +54,9 @@ end
 function showError(errorMsg)
     local errorDlg = Dialog("Error")
     errorDlg
-        :label{id = 0, text = errorMsg}
+        :label{ text = errorMsg }
         :newrow()
-        :button{id = 1, text = "Close", onclick = function() errorDlg:close() end }
+        :button{ text = "Close", onclick = function() errorDlg:close() end }
     errorDlg:show()
     return
 end

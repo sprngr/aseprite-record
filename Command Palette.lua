@@ -46,7 +46,7 @@ function checkSprite()
         if not fileExists(currentSprite.filename)
         then
             sprite = nil
-            return showError("Sprite needs to be saved before able to run script.")
+            return showError("File must be saved before able to run script.")
         end
         
         -- If sprite is nil, or current sprite doesnt match; reinitialize it.
@@ -94,17 +94,6 @@ mainDlg:button{
     onclick = 
         function() 
             openTimeLapse()
-        end
-}
-mainDlg:button{
-    text = "Debug",
-    onclick = 
-        function() 
-            if not fileExists(app.activeSprite.filename)
-            then
-                sprite = nil
-                return showError("Your file needs to be saved before able to create a snapshot.")
-            end
         end
 }
 

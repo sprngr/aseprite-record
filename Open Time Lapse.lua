@@ -34,6 +34,8 @@ then
     then
         app.command.OpenFile{filename=getSavePath()..getSaveFileName(0)}
     else
-        showError("Need to record at least one snapshot to load time lapse.")
+        return showError("Need to record at least one snapshot to load time lapse.")
     end
+else
+    return showError("File must be saved before able to run script.")
 end

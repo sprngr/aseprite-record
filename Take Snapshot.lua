@@ -31,4 +31,6 @@ then
     setupFileStrings(sprite.filename)
     setCurrentIncrement()
     recordSnapshot(sprite, fileIncrement)
+else
+    return showError("File must be saved before able to run script.")
 end
