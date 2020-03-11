@@ -1,5 +1,5 @@
 --[[
-    Record v1.0 - OpenTimeLapse
+    Record v1.0 - Open Time Lapse
     Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
@@ -26,7 +26,7 @@ end
 
 local sprite = app.activeSprite
 
-if sprite and sprite.filename 
+if sprite and fileExists(sprite.filename)
 then
     setupFileStrings(sprite.filename)
     

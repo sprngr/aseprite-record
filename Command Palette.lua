@@ -34,19 +34,27 @@ function setCurrentIncrement()
 end
 
 function checkSprite()
+    -- If no sprite is active, throw error
     if not app.activeSprite
     then
         return showError("No active sprite available.")
     else
+        -- stash currently active sprite for comparison
         local currentSprite = app.activeSprite
-
-        if not currentSprite.filename
+        
+        -- Check if file exists, reset sprite and throw error if not.
+        if not fileExists(currentSprite.filename)
         then
-            return showError("Sprite needs to be saved before able to run record.")
-        elseif (sprite == nil or not sprite == currentSprite)
+            sprite = nil
+            return showError("Sprite needs to be saved before able to run script.")
+        end
+        
+        -- If sprite is nil, or current sprite doesnt match; reinitialize it.
+        if (sprite == nil or not sprite.filename == currentSprite.filename)
         then
             return setSprite()
         end
+    end
 end
 
 function takeSnapshot()
@@ -68,7 +76,7 @@ function openTimeLapse()
         then
             app.command.OpenFile{filename=getSavePath()..getSaveFileName(0)}
         else
-            showError("Need to record at least one snapshot to load time lapse.")
+            showError("You need to make at least one snapshot to load a time lapse.")
         end
     end
 end
@@ -86,6 +94,17 @@ mainDlg:button{
     onclick = 
         function() 
             openTimeLapse()
+        end
+}
+mainDlg:button{
+    text = "Debug",
+    onclick = 
+        function() 
+            if not fileExists(app.activeSprite.filename)
+            then
+                sprite = nil
+                return showError("Your file needs to be saved before able to create a snapshot.")
+            end
         end
 }
 
