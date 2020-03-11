@@ -6,8 +6,8 @@
     Source: https://github.com/sprngr/aseprite-record
 ]]
 
-
 dofile('.lib/utils.lua')
+dofile('.lib/version-check.lua')
 dofile('.lib/record-core.lua')
 
 local fileIncrement = 0
@@ -26,11 +26,14 @@ end
 
 local sprite = app.activeSprite
 
-if sprite and fileExists(sprite.filename)
+if checkVersion()
 then
-    setupFileStrings(sprite.filename)
-    setCurrentIncrement()
-    recordSnapshot(sprite, fileIncrement)
-else
-    return showError("File must be saved before able to run script.")
+    if sprite and fileExists(sprite.filename)
+    then
+        setupFileStrings(sprite.filename)
+        setCurrentIncrement()
+        recordSnapshot(sprite, fileIncrement)
+    else
+        return showError("File must be saved before able to run script.")
+    end
 end

@@ -6,13 +6,13 @@
     Source: https://github.com/sprngr/aseprite-record
 ]]
 
-
 dofile('.lib/utils.lua')
+dofile('.lib/version-check.lua')
 dofile('.lib/record-core.lua')
 
 local sprite = nil
 local fileIncrement = 0
-local mainDlg = Dialog("Record - v1.0")
+local mainDlg = Dialog("Record")
 
 function setSprite()
     sprite = app.activeSprite
@@ -81,20 +81,23 @@ function openTimeLapse()
     end
 end
 
--- Creates the main dialog box
-mainDlg:button{
-    text = "Take Snapshot",
-    onclick = 
-        function()
-            takeSnapshot()
-        end
-}
-mainDlg:button{
-    text = "Open Time Lapse",
-    onclick = 
-        function() 
-            openTimeLapse()
-        end
-}
+if checkVersion()
+then
+    -- Creates the main dialog box
+    mainDlg:button{
+        text = "Take Snapshot",
+        onclick = 
+            function()
+                takeSnapshot()
+            end
+    }
+    mainDlg:button{
+        text = "Open Time Lapse",
+        onclick = 
+            function() 
+                openTimeLapse()
+            end
+    }
 
-mainDlg:show{ wait=false } 
+    mainDlg:show{ wait=false }
+end
