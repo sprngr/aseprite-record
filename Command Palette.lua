@@ -6,31 +6,29 @@
     Source: https://github.com/sprngr/aseprite-record
 ]]
 
-dofile('.lib/utils.lua')
-dofile('.lib/version-check.lua')
-dofile('.lib/record-core.lua')
+dofile(".lib/record-core.lua")
 
-local sprite = nil
 local fileIncrement = 0
 local mainDlg = Dialog("Record")
-
-function setSprite()
-    sprite = app.activeSprite
-    setupFileStrings(sprite.filename)
-    setCurrentIncrement()
-end
+local sprite = nil
 
 function setCurrentIncrement()
     fileIncrement = 0
     local incrementSet = false
     while not incrementSet do
-        if (not fileExists(getSavePath()..getSaveFileName(fileIncrement)))
+        if (not fileExists(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement))))
         then
             incrementSet = true
         else
             fileIncrement = fileIncrement + 1
         end
     end
+end
+
+local function setSprite()
+    sprite = app.activeSprite
+    setupFileStrings(sprite.filename)
+    setCurrentIncrement()
 end
 
 function checkSprite()
@@ -72,9 +70,9 @@ function openTimeLapse()
     
     if sprite
     then
-        if fileExists(getSavePath()..getSaveFileName(0))
+        if fileExists(app.fs.joinPath(getSavePath(), getSaveFileName(0)))
         then
-            app.command.OpenFile{filename=getSavePath()..getSaveFileName(0)}
+            app.command.OpenFile{filename=app.fs.joinPath(getSavePath(), getSaveFileName(0))}
         else
             showError("You need to make at least one snapshot to load a time lapse.")
         end

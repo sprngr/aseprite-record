@@ -6,35 +6,19 @@
     Source: https://github.com/sprngr/aseprite-record
 ]]
 
-dofile('.lib/utils.lua')
-dofile('.lib/version-check.lua')
-dofile('.lib/record-core.lua')
-
-local fileIncrement = 0
-
-function setCurrentIncrement()
-    local incrementSet = false
-    while not incrementSet do
-        if (not fileExists(getSavePath()..getSaveFileName(fileIncrement)))
-        then
-            incrementSet = true
-        else
-            fileIncrement = fileIncrement + 1
-        end
-    end
-end
+dofile(".lib/record-core.lua")
 
 local sprite = app.activeSprite
 
 if checkVersion()
 then
-    if sprite and fileExists(sprite.filename)
+    if sprite and app.fs.isFile(sprite.filename)
     then
         setupFileStrings(sprite.filename)
         
-        if fileExists(getSavePath()..getSaveFileName(0))
+        if app.fs.isFile(app.fs.joinPath(getSavePath(),app.fs.pathSeparator, getSaveFileName(0)))
         then
-            app.command.OpenFile{filename=getSavePath()..getSaveFileName(0)}
+            app.command.OpenFile{filename=app.fs.joinPath(getSavePath(), app.fs.pathSeparator, getSaveFileName(0))}
         else
             return showError("Need to record at least one snapshot to load time lapse.")
         end
