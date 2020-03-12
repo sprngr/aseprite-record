@@ -1,4 +1,4 @@
-# Aseprite Record
+# Record for Aseprite
 
 An Aseprite utility script for recording snapshots in app to build time lapses.
 
