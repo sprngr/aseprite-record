@@ -1,5 +1,5 @@
 --[[
-    Record v1.0 - Command Palette
+    Record v1.1 - Command Palette
     Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
@@ -16,7 +16,7 @@ function setCurrentIncrement()
     fileIncrement = 0
     local incrementSet = false
     while not incrementSet do
-        if (not fileExists(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement))))
+        if (not app.fs.isFile(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement))))
         then
             incrementSet = true
         else
@@ -41,7 +41,7 @@ function checkSprite()
         local currentSprite = app.activeSprite
         
         -- Check if file exists, reset sprite and throw error if not.
-        if not fileExists(currentSprite.filename)
+        if not app.fs.isFile(currentSprite.filename)
         then
             sprite = nil
             return showError("File must be saved before able to run script.")
@@ -70,7 +70,7 @@ function openTimeLapse()
     
     if sprite
     then
-        if fileExists(app.fs.joinPath(getSavePath(), getSaveFileName(0)))
+        if app.fs.isFile(app.fs.joinPath(getSavePath(), getSaveFileName(0)))
         then
             app.command.OpenFile{filename=app.fs.joinPath(getSavePath(), getSaveFileName(0))}
         else

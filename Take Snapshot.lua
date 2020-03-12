@@ -1,5 +1,5 @@
 --[[
-    Record v1.0 - Take Snapshot
+    Record v1.1 - Take Snapshot
     Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
@@ -15,7 +15,7 @@ function setCurrentIncrement()
     fileIncrement = 0
     local incrementSet = false
     while not incrementSet do
-        if (not fileExists(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement))))
+        if (not app.fs.isFile(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement))))
         then
             incrementSet = true
         else
@@ -26,7 +26,7 @@ end
 
 if checkVersion()
 then
-    if sprite and fileExists(sprite.filename)
+    if sprite and app.fs.isFile(sprite.filename)
     then
         setupFileStrings(sprite.filename)
         setCurrentIncrement()
