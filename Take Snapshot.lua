@@ -11,6 +11,19 @@ dofile(".lib/record-core.lua")
 local fileIncrement = 0
 local sprite = app.activeSprite
 
+function setCurrentIncrement()
+    fileIncrement = 0
+    local incrementSet = false
+    while not incrementSet do
+        if (not fileExists(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement))))
+        then
+            incrementSet = true
+        else
+            fileIncrement = fileIncrement + 1
+        end
+    end
+end
+
 if checkVersion()
 then
     if sprite and fileExists(sprite.filename)

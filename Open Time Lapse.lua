@@ -8,20 +8,6 @@
 
 dofile(".lib/record-core.lua")
 
-local fileIncrement = 0
-
-function setCurrentIncrement()
-    local incrementSet = false
-    while not incrementSet do
-        if (not app.fs.isFile(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement))))
-        then
-            incrementSet = true
-        else
-            fileIncrement = fileIncrement + 1
-        end
-    end
-end
-
 local sprite = app.activeSprite
 
 if checkVersion()
@@ -30,9 +16,9 @@ then
     then
         setupFileStrings(sprite.filename)
         
-        if app.fs.isFile(app.fs.joinPath(getSavePath(), getSaveFileName(0)))
+        if app.fs.isFile(app.fs.joinPath(getSavePath(),app.fs.pathSeparator, getSaveFileName(0)))
         then
-            app.command.OpenFile{filename=app.fs.joinPath(getSavePath(), getSaveFileName(0))}
+            app.command.OpenFile{filename=app.fs.joinPath(getSavePath(), app.fs.pathSeparator, getSaveFileName(0))}
         else
             return showError("Need to record at least one snapshot to load time lapse.")
         end

@@ -12,6 +12,19 @@ local fileIncrement = 0
 local mainDlg = Dialog("Record")
 local sprite = nil
 
+function setCurrentIncrement()
+    fileIncrement = 0
+    local incrementSet = false
+    while not incrementSet do
+        if (not fileExists(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement))))
+        then
+            incrementSet = true
+        else
+            fileIncrement = fileIncrement + 1
+        end
+    end
+end
+
 local function setSprite()
     sprite = app.activeSprite
     setupFileStrings(sprite.filename)
@@ -57,9 +70,9 @@ function openTimeLapse()
     
     if sprite
     then
-        if fileExists(getSavePath()..getSaveFileName(0))
+        if fileExists(app.fs.joinPath(getSavePath(), getSaveFileName(0)))
         then
-            app.command.OpenFile{filename=getSavePath()..getSaveFileName(0)}
+            app.command.OpenFile{filename=app.fs.joinPath(getSavePath(), getSaveFileName(0))}
         else
             showError("You need to make at least one snapshot to load a time lapse.")
         end

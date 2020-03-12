@@ -44,26 +44,13 @@ function getDirectoryName()
 end
 
 function getSavePath()
-    return app.fs.joinPath(getFilePath(),getDirectoryName())
+    return app.fs.joinPath(getFilePath(), getDirectoryName())
 end
 
 function recordSnapshot(sprite, increment)
-    sprite:saveCopyAs(app.fs.joinPath(getSavePath(),getSaveFileName(increment)))
+    sprite:saveCopyAs(app.fs.joinPath(getSavePath(), getSaveFileName(increment)))
 end
 
 function getSaveFileName(increment)
     return getFileName().."_"..increment..".png"
-end
-
-function setCurrentIncrement()
-    fileIncrement = 0
-    local incrementSet = false
-    while not incrementSet do
-        if (not fileExists(getSavePath()..getSaveFileName(fileIncrement)))
-        then
-            incrementSet = true
-        else
-            fileIncrement = fileIncrement + 1
-        end
-    end
 end
