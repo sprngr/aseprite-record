@@ -6,31 +6,16 @@
     Source: https://github.com/sprngr/aseprite-record
 ]]
 
-dofile('.lib/utils.lua')
-dofile('.lib/version-check.lua')
-dofile('.lib/record-core.lua')
+dofile(".lib/record-core.lua")
 
-local sprite = nil
 local fileIncrement = 0
 local mainDlg = Dialog("Record")
+local sprite = nil
 
-function setSprite()
+local function setSprite()
     sprite = app.activeSprite
     setupFileStrings(sprite.filename)
     setCurrentIncrement()
-end
-
-function setCurrentIncrement()
-    fileIncrement = 0
-    local incrementSet = false
-    while not incrementSet do
-        if (not fileExists(getSavePath()..getSaveFileName(fileIncrement)))
-        then
-            incrementSet = true
-        else
-            fileIncrement = fileIncrement + 1
-        end
-    end
 end
 
 function checkSprite()
