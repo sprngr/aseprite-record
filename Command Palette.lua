@@ -1,5 +1,5 @@
 --[[
-    Record v1.1 - Command Palette
+    Record v1.2 - Command Palette
     Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record

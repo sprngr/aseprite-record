@@ -1,5 +1,5 @@
 --[[
-    Record v1.1 - Open Time Lapse
+    Record v1.2 - Open Time Lapse
     Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
