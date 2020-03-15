@@ -25,9 +25,9 @@ function setCurrentIncrement()
     end
 end
 
-local function setSprite(newSprite)
-    sprite = newSprite
-    setupFileStrings(newSprite.filename)
+local function setSprite()
+    sprite = app.activeSprite
+    setupFileStrings(sprite.filename)
     setCurrentIncrement()
 end
 
@@ -46,11 +46,11 @@ function checkSprite()
             sprite = nil
             return showError("File must be saved before able to run script.")
         end
-        
+
         -- If sprite is nil, or current sprite doesnt match; reinitialize it.
-        if (sprite == nil or not sprite.filename == currentSprite.filename)
+        if (sprite == nil or sprite.filename ~= currentSprite.filename)
         then
-            return setSprite(app.activeSprite)
+            setSprite()
         end
     end
 end
