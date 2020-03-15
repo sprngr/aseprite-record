@@ -46,9 +46,9 @@ function checkSprite()
             sprite = nil
             return showError("File must be saved before able to run script.")
         end
-        
+
         -- If sprite is nil, or current sprite doesnt match; reinitialize it.
-        if (sprite == nil or not sprite.filename == currentSprite.filename)
+        if (sprite == nil or sprite.filename ~= currentSprite.filename)
         then
             return setSprite()
         end
