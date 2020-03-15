@@ -50,7 +50,7 @@ function checkSprite()
         -- If sprite is nil, or current sprite doesnt match; reinitialize it.
         if (sprite == nil or sprite.filename ~= currentSprite.filename)
         then
-            setSprite()
+            return setSprite()
         end
     end
 end
