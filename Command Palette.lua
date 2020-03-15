@@ -25,9 +25,9 @@ function setCurrentIncrement()
     end
 end
 
-local function setSprite()
-    sprite = app.activeSprite
-    setupFileStrings(sprite.filename)
+local function setSprite(newSprite)
+    sprite = newSprite
+    setupFileStrings(newSprite.filename)
     setCurrentIncrement()
 end
 
@@ -50,7 +50,7 @@ function checkSprite()
         -- If sprite is nil, or current sprite doesnt match; reinitialize it.
         if (sprite == nil or not sprite.filename == currentSprite.filename)
         then
-            return setSprite()
+            return setSprite(app.activeSprite)
         end
     end
 end
