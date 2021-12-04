@@ -148,7 +148,7 @@ if checkVersion() then
             end
     }
     mainDlg:button{
-        text = "Enable",
+        text = "Start",
         id = "start",
         onclick = 
             function()
@@ -166,7 +166,7 @@ if checkVersion() then
             end
     }
     mainDlg:button{
-        text = "Disable",
+        text = "Stop",
         id = "stop",
         onclick = 
             function()
