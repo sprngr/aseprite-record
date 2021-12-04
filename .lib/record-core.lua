@@ -1,6 +1,13 @@
+--[[
+    Record v2.0 - Record Core Library
+    Author: Michael Springer (@sprngr_)
+    License: MIT
+    Website: https://sprngr.itch.io/aseprite-record
+    Source: https://github.com/sprngr/aseprite-record
+]]
+
 function checkVersion()
-    if app.apiVersion < 15
-    then
+    if app.apiVersion < 15 then
         showError("This script requires Aseprite v1.2.30 or newer. Please update Aseprite to continue.")
         return false
     else
