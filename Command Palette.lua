@@ -133,7 +133,7 @@ if checkVersion() then
     }
     mainDlg:label{
         id = "status",
-        label = "Automatic Snapshot is:",
+        label = "Status:",
         text = "OFF"
     }
     mainDlg:number{

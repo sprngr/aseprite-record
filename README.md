@@ -18,6 +18,8 @@ This option will open up a dialog box to leave up in your editor, giving you acc
 
 The functions of each button are described in detail below and are available as single actions that can be mapped to a keyboard shortcut.
 
+The command palette also provides functionality to run those same functions at an automatic interval. It requires there to be an active & saved sprite in order to run. The interval at which saves happen is based on sprite change events. This value is configurable in the dialog, lower numbers means more frequent snapshots. If you change the active sprite in the app, automatic snapshots will turn itself off so it isn't running in the background while you are on a different file.
+
 ### Take Snapshot
 
 This option saves a flattened png copy of the visible layers of the current sprite. It is saved to a sibling folder named <name of sprite>_record. Each file will be saved with an incrementing count appended to the end of it. No modifications to your work are performed by this script, it only creates new files.
