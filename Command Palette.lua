@@ -9,8 +9,18 @@
 dofile(".lib/record-core.lua")
 
 local fileIncrement = 0
-local mainDlg = Dialog("Record")
+
 local sprite = nil
+local autoSnapshot = false
+local autoSnapshotDelay = 10
+local autoSnapshotIncrement = 0
+
+local mainDlg = Dialog{
+    title = "Record",
+    onclose = function() 
+        autoSnapshot = false
+    end
+}
 
 function setCurrentIncrement()
     fileIncrement = 0
@@ -35,6 +45,7 @@ function checkSprite()
     -- If no sprite is active, throw error
     if not app.activeSprite
     then
+        sprite = nil
         return showError("No active sprite available.")
     else
         -- stash currently active sprite for comparison
@@ -79,23 +90,104 @@ function openTimeLapse()
     end
 end
 
+function takeAutoSnapshot()
+    if autoSnapshot then
+        if autoSnapshotIncrement < autoSnapshotDelay then
+            autoSnapshotIncrement = autoSnapshotIncrement + 1
+        else 
+            autoSnapshotIncrement = 0
+            takeSnapshot()
+        end
+    end
+end
+
 if checkVersion()
 then
-    -- Creates the main dialog box
-    mainDlg:button{
-        text = "Take Snapshot",
-        onclick = 
-            function()
-                takeSnapshot()
-            end
-    }
-    mainDlg:button{
-        text = "Open Time Lapse",
-        onclick = 
-            function() 
-                openTimeLapse()
-            end
-    }
+    checkSprite()
+    if sprite then
 
-    mainDlg:show{ wait=false }
+        app.events:on('sitechange',
+            function()
+                if (sprite and autoSnapshot) then
+                    autoSnapshot = false
+                    sprite.events:off(takeAutoSnapshot)
+                    mainDlg:modify{
+                        id = "status",
+                        text = "OFF"
+                    }
+                end
+            end)
+
+        -- Creates the main dialog box
+        mainDlg:separator{
+            text="Manual Controls"
+        }
+        mainDlg:button{
+            text = "Take Snapshot",
+            onclick = 
+                function()
+                    takeSnapshot()
+                end
+        }
+        mainDlg:button{
+            text = "Open Time Lapse",
+            onclick = 
+                function() 
+                    openTimeLapse()
+                end
+        }
+        mainDlg:separator{
+            text="Automatic Snapshot"
+        }
+        mainDlg:number{
+            id = "delay",
+            label = "Action Delay Count:",
+            focus = true,
+            text = "10",
+            onchange = 
+                function()
+                    autoSnapshotDelay = mainDlg.data.delay
+                    autoSnapshotIncrement = 0
+                end
+        }
+        mainDlg:label{
+            id = "status",
+            label = "Automatic Snapshot is:",
+            text = "OFF"
+        }
+        mainDlg:button{
+            text = "Enable",
+            id = "start",
+            onclick = 
+                function()
+                    checkSprite()
+    
+                    if sprite then
+                        autoSnapshot = true
+                        autoSnapshotIncrement = 0
+                        sprite.events:on('change', takeAutoSnapshot)
+                        mainDlg:modify{
+                            id = "status",
+                            text = "RUNNING"
+                        }
+                    end
+                end
+        }
+        mainDlg:button{
+            text = "Disable",
+            id = "stop",
+            onclick = 
+                function()
+                    if autoSnapshot then 
+                        autoSnapshot = false
+                        sprite.events:off(takeAutoSnapshot)
+                        mainDlg:modify{
+                            id = "status",
+                            text = "OFF"
+                        }
+                    end
+                end
+        }
+        mainDlg:show{ wait=false }
+    end
 end
