@@ -1,5 +1,5 @@
 --[[
-    Record v1.2 - Take Snapshot
+    Record v2.0 - Take Snapshot
     Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
@@ -11,12 +11,11 @@ dofile(".lib/record-core.lua")
 local fileIncrement = 0
 local sprite = app.activeSprite
 
-function setCurrentIncrement()
+local function setCurrentIncrement()
     fileIncrement = 0
     local incrementSet = false
     while not incrementSet do
-        if (not app.fs.isFile(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement))))
-        then
+        if (not app.fs.isFile(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement)))) then
             incrementSet = true
         else
             fileIncrement = fileIncrement + 1
@@ -26,8 +25,7 @@ end
 
 if checkVersion()
 then
-    if sprite and app.fs.isFile(sprite.filename)
-    then
+    if sprite and app.fs.isFile(sprite.filename) then
         setupFileStrings(sprite.filename)
         setCurrentIncrement()
         recordSnapshot(sprite, fileIncrement)
