@@ -32,18 +32,13 @@ local function setupFileStrings(filename)
     setFilePath(filename)
 end
 
-local function getDirectoryName()
-    return fileName.."_record"
-end
-
 local function getSavePath()
-    return app.fs.joinPath(filePath, getDirectoryName())
+    return app.fs.joinPath(filePath, fileName.."_record")
 end
 
 local function recordSnapshot(sprite, increment)
     sprite:saveCopyAs(app.fs.joinPath(getSavePath(), fileName.."_"..increment..".png"))
 end
-
 -- Local override region end
 
 local function setCurrentIncrement()
