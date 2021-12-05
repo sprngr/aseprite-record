@@ -81,14 +81,16 @@ end
 
 local function takeAutoSnapshot()
     if autoSnapshot then
-        if autoSnapshotIncrement < autoSnapshotDelay then
-            autoSnapshotIncrement = autoSnapshotIncrement + 1
-        else 
+        autoSnapshotIncrement = autoSnapshotIncrement + 1
+
+        if autoSnapshotIncrement >= autoSnapshotDelay then
             autoSnapshotIncrement = 0
-            if sprite then
-                recordSnapshot(sprite, fileIncrement)
-                fileIncrement = fileIncrement + 1
-            end
+            
+            -- Paranoia, check increment in case manual operation was used
+            setCurrentIncrement()
+
+            recordSnapshot(sprite, fileIncrement)
+            fileIncrement = fileIncrement + 1
         end
     end
 end
@@ -97,7 +99,7 @@ end
 -- Initialize dialog if app meets version requirements
 if checkVersion() then
     local mainDlg = Dialog{
-        title = "Record - Automatic Snapshot",
+        title = "Record - Auto Snapshot",
         onclose = 
             function() 
                 autoSnapshot = false
@@ -108,7 +110,7 @@ if checkVersion() then
     -- Creates the main dialog box
     mainDlg:label{
         id = "target",
-        label = "Target Sprite:",
+        label = "Target:",
         text = "<NONE>"
     }
     mainDlg:label{
@@ -129,39 +131,40 @@ if checkVersion() then
     }
     mainDlg:separator{}
     mainDlg:button{
+        id = "toggle",
         text = "Start",
-        id = "start",
         onclick = 
             function()
-                checkSprite()
+                if not autoSnapshot then
+                    checkSprite()
 
-                if sprite then
-                    autoSnapshot = true
-                    autoSnapshotIncrement = 0
-                    sprite.events:on('change', takeAutoSnapshot)
-                    mainDlg:modify{
-                        id = "status",
-                        text = "RUNNING"
-                    }
-                    mainDlg:modify{
-                        id = "target",
-                        text = fileName
-                    }
-                end
-            end
-    }
-    mainDlg:button{
-        text = "Stop",
-        id = "stop",
-        onclick = 
-            function()
-                -- if cache is set, clear it
-                if autoSnapshot then 
+                    if sprite then
+                        autoSnapshot = true
+                        autoSnapshotIncrement = 0
+                        sprite.events:on('change', takeAutoSnapshot)
+                        mainDlg:modify{
+                            id = "status",
+                            text = "RUNNING"
+                        }
+                        mainDlg:modify{
+                            id = "toggle",
+                            text = "Stop"
+                        }
+                        mainDlg:modify{
+                            id = "target",
+                            text = fileName
+                        }
+                    end
+                else
                     autoSnapshot = false
                     sprite.events:off(takeAutoSnapshot)
                     mainDlg:modify{
                         id = "status",
                         text = "OFF"
+                    }
+                    mainDlg:modify{
+                        id = "toggle",
+                        text = "Start"
                     }
                 end
             end

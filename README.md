@@ -12,13 +12,19 @@ If you would like to live on the edge and pull down the source code, you can clo
 
 (I don't like that the script files have a space in their names, but it makes it look so much better in the Aseprite menus.)
 
+### Automatic Snapshot
+
+This option will open up a dialog box that provides functionality take snapshots on an interval.
+
+It requires there to be an active & saved sprite in order to run. The interval at which saves happen is based on [sprite change events](https://github.com/aseprite/api/blob/main/api/sprite.md#spriteevents) - when changes are made to the sprite, including undo/redo actions.
+
+The interval is configurable in the dialog, lower numbers means more frequent snapshots (and more frequent save dialog popups). If you change the active sprite in the app, automatic snapshots will keep a cached reference to the target sprite until you target a new one with the dialog. Usage of the Command Palette and Take Snapshot command can be used in parallel while this is running.
+
 ### Command Palette
 
 This option will open up a dialog box to leave up in your editor, giving you access to the functionality to take a snapshot & open the time lapse for the current sprite if any snapshots are saved for it.
 
 The functions of each button are described in detail below and are available as single actions that can be mapped to a keyboard shortcut.
-
-The command palette also provides functionality to run those same functions at an automatic interval. It requires there to be an active & saved sprite in order to run. The interval at which saves happen is based on sprite change events. This value is configurable in the dialog, lower numbers means more frequent snapshots. If you change the active sprite in the app, automatic snapshots will turn itself off so it isn't running in the background while you are on a different file.
 
 ### Take Snapshot
 
