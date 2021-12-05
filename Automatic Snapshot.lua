@@ -17,6 +17,7 @@ local fileIncrement = 0
 local fileName = ""
 local filePath = ""
 local sprite = nil
+local spriteSelection = nil
 
 -- Local overrides of core code to cache the target sprite
 local function setFileName(filename)
@@ -79,19 +80,49 @@ local function checkSprite()
     end
 end
 
+local function cacheSelection()
+    local selection = sprite.selection
+
+    -- Returns false if sprite selection is empty
+    if selection.isEmpty then
+        spriteSelection = nil
+    end
+
+    -- Compare against cached selection
+    if spriteSelection ~= selection then
+        spriteSelection = selection
+    end
+end
+
+local function selectionChanged()
+    local selection = sprite.selection
+
+    -- Returns false if sprite selection is empty
+    if not spriteSelection then
+        return false
+    end
+
+    -- Compare against cached selection
+    return spriteSelection ~= selection
+end
+
 local function takeAutoSnapshot()
     if autoSnapshot then
         autoSnapshotIncrement = autoSnapshotIncrement + 1
 
-        if autoSnapshotIncrement >= autoSnapshotDelay then
-            autoSnapshotIncrement = 0
-            
-            -- Paranoia, check increment in case manual operation was used
-            setCurrentIncrement()
+            if autoSnapshotIncrement >= autoSnapshotDelay then
+                autoSnapshotIncrement = 0
+                
+                -- Check if a selection is different or empty, and skip it so it doesn't crash
+                if not selectionChanged() or sprite.selection.isEmpty then
+                    -- Paranoia, check increment in case manual operation was used
+                    setCurrentIncrement()
+        
+                    recordSnapshot(sprite, fileIncrement)
+                end
+            end
 
-            recordSnapshot(sprite, fileIncrement)
-            fileIncrement = fileIncrement + 1
-        end
+        cacheSelection()
     end
 end
 
