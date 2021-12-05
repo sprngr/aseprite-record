@@ -1,5 +1,5 @@
 --[[
-    Record v2.0 - Automatic Snapshot Controls
+    Record v2.3 - Automatic Snapshot Controls
     Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
@@ -84,7 +84,7 @@ local function cacheSelection()
     local selection = sprite.selection
 
     -- Returns false if sprite selection is empty
-    if selection.isEmpty then
+    if not selection then
         spriteSelection = nil
     end
 
@@ -98,7 +98,7 @@ local function selectionChanged()
     local selection = sprite.selection
 
     -- Returns false if sprite selection is empty
-    if not spriteSelection or selection.isEmpty then
+    if not spriteSelection then
         return false
     end
 
