@@ -98,7 +98,7 @@ local function selectionChanged()
     local selection = sprite.selection
 
     -- Returns false if sprite selection is empty
-    if not spriteSelection then
+    if not spriteSelection or selection.isEmpty then
         return false
     end
 
@@ -114,7 +114,7 @@ local function takeAutoSnapshot()
                 autoSnapshotIncrement = 0
                 
                 -- Check if a selection is different or empty, and skip it so it doesn't crash
-                if not selectionChanged() or sprite.selection.isEmpty then
+                if not selectionChanged() then
                     -- Paranoia, check increment in case manual operation was used
                     setCurrentIncrement()
         
