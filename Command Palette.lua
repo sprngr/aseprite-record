@@ -8,22 +8,12 @@
 
 dofile(".lib/record-core.lua")
 
+-- General Snapshot functions
 local fileIncrement = 0
 
 local sprite = nil
-local autoSnapshot = false
-local autoSnapshotDelay = 3
-local autoSnapshotIncrement = 0
 
-local mainDlg = Dialog{
-    title = "Record",
-    onclose = 
-        function() 
-            autoSnapshot = false
-        end
-}
-
-function setCurrentIncrement()
+local function setCurrentIncrement()
     fileIncrement = 0
     local incrementSet = false
     while not incrementSet do
@@ -41,7 +31,7 @@ local function setSprite()
     setCurrentIncrement()
 end
 
-function checkSprite()
+local function checkSprite()
     -- If no sprite is active, throw error
     if not app.activeSprite then
         sprite = nil
@@ -63,7 +53,7 @@ function checkSprite()
     end
 end
 
-function takeSnapshot()
+local function takeSnapshot()
     checkSprite()
 
     if sprite then
@@ -72,7 +62,7 @@ function takeSnapshot()
     end
 end
 
-function openTimeLapse()
+local function openTimeLapse()
     checkSprite()
     
     if sprite then
@@ -84,36 +74,14 @@ function openTimeLapse()
     end
 end
 
-function takeAutoSnapshot()
-    if autoSnapshot then
-        if autoSnapshotIncrement < autoSnapshotDelay then
-            autoSnapshotIncrement = autoSnapshotIncrement + 1
-        else 
-            autoSnapshotIncrement = 0
-            takeSnapshot()
-        end
-    end
-end
-
+-- Main Dialog
 -- Initialize dialog if app meets version requirements
 if checkVersion() then
-    app.events:on('sitechange',
-        function()
-            if (sprite and autoSnapshot) then
-                autoSnapshot = false
-                sprite.events:off(takeAutoSnapshot)
-                mainDlg:modify{
-                    id = "status",
-                    text = "OFF"
-                }
-            end
-        end
-    )
+    local mainDlg = Dialog{
+        title = "Record - Command Palette"
+    }
 
     -- Creates the main dialog box
-    mainDlg:separator{
-        text="Manual Controls"
-    }
     mainDlg:button{
         text = "Take Snapshot",
         onclick = 
@@ -126,58 +94,6 @@ if checkVersion() then
         onclick = 
             function() 
                 openTimeLapse()
-            end
-    }
-    mainDlg:separator{
-        text="Automatic Snapshot"
-    }
-    mainDlg:label{
-        id = "status",
-        label = "Status:",
-        text = "OFF"
-    }
-    mainDlg:number{
-        id = "delay",
-        label = "Action Delay Count:",
-        focus = true,
-        text = tostring(autoSnapshotDelay),
-        onchange = 
-            function()
-                autoSnapshotDelay = mainDlg.data.delay
-                autoSnapshotIncrement = 0
-            end
-    }
-    mainDlg:button{
-        text = "Start",
-        id = "start",
-        onclick = 
-            function()
-                checkSprite()
-
-                if sprite then
-                    autoSnapshot = true
-                    autoSnapshotIncrement = 0
-                    sprite.events:on('change', takeAutoSnapshot)
-                    mainDlg:modify{
-                        id = "status",
-                        text = "RUNNING"
-                    }
-                end
-            end
-    }
-    mainDlg:button{
-        text = "Stop",
-        id = "stop",
-        onclick = 
-            function()
-                if autoSnapshot then 
-                    autoSnapshot = false
-                    sprite.events:off(takeAutoSnapshot)
-                    mainDlg:modify{
-                        id = "status",
-                        text = "OFF"
-                    }
-                end
             end
     }
     mainDlg:show{ wait=false }    

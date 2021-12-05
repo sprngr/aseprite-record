@@ -11,7 +11,7 @@ dofile(".lib/record-core.lua")
 local fileIncrement = 0
 local sprite = app.activeSprite
 
-function setCurrentIncrement()
+local function setCurrentIncrement()
     fileIncrement = 0
     local incrementSet = false
     while not incrementSet do
