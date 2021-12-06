@@ -74,7 +74,7 @@ local function checkSprite()
         end
 
         -- If sprite is nil, or current sprite doesnt match; reinitialize it.
-        if (not sprite or sprite.filename ~= currentSprite.filename) then
+        if (not sprite or sprite ~= currentSprite) then
             return setSprite()
         end
     end
@@ -83,24 +83,18 @@ end
 local function cacheSelection()
     local selection = sprite.selection
 
-    -- Returns false if sprite selection is empty
+    -- Empty cache if nothing selected
     if not selection then
         spriteSelection = nil
-    end
 
-    -- Compare against cached selection
-    if spriteSelection ~= selection then
+    -- Compare against cached selection, store new if different
+    elseif spriteSelection ~= selection then
         spriteSelection = selection
     end
 end
 
 local function selectionChanged()
     local selection = sprite.selection
-
-    -- Returns false if sprite selection is empty
-    if not spriteSelection then
-        return false
-    end
 
     -- Compare against cached selection
     return spriteSelection ~= selection
@@ -110,19 +104,19 @@ local function takeAutoSnapshot()
     if autoSnapshot then
         autoSnapshotIncrement = autoSnapshotIncrement + 1
 
-            if autoSnapshotIncrement >= autoSnapshotDelay then
-                autoSnapshotIncrement = 0
-                
-                -- Check if a selection is different or empty, and skip it so it doesn't crash
-                if not selectionChanged() then
-                    -- Paranoia, check increment in case manual operation was used
-                    setCurrentIncrement()
-        
-                    recordSnapshot(sprite, fileIncrement)
-                end
+        if autoSnapshotIncrement >= autoSnapshotDelay then
+            autoSnapshotIncrement = 0
+            
+            -- Check if a selection is different or empty, and skip it so it doesn't crash
+            if not selectionChanged() then
+                -- Paranoia, check increment in case manual operation was used
+                setCurrentIncrement()
+    
+                recordSnapshot(sprite, fileIncrement)
             end
 
-        cacheSelection()
+            cacheSelection()
+        end
     end
 end
 
