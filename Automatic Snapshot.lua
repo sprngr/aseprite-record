@@ -1,5 +1,5 @@
 --[[
-    Record v2.3 - Automatic Snapshot Controls
+    Record v2.4 - Automatic Snapshot Controls
     Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record

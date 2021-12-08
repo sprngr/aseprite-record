@@ -1,5 +1,5 @@
 --[[
-    Record v2.0 - Record Core Library
+    Record v2.4 - Record Core Library
     Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record

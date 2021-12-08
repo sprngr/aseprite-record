@@ -1,5 +1,5 @@
 --[[
-    Record v2.0 - Take Snapshot
+    Record v2.4 - Take Snapshot
     Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
