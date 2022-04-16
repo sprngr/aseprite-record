@@ -1,6 +1,5 @@
 --[[
     Record v2.4 - Open Time Lapse
-    Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
     Source: https://github.com/sprngr/aseprite-record
@@ -8,14 +7,13 @@
 
 dofile(".lib/record-core.lua")
 
-local sprite = app.activeSprite
-
 if checkVersion() then
+    local sprite = app.activeSprite
     if sprite and app.fs.isFile(sprite.filename) then
-        setupFileStrings(sprite.filename)
-        
-        if app.fs.isFile(app.fs.joinPath(getSavePath(),app.fs.pathSeparator, getSaveFileName(0))) then
-            app.command.OpenFile{filename=app.fs.joinPath(getSavePath(), app.fs.pathSeparator, getSaveFileName(0))}
+        local context = ProjectContext_new(sprite)
+        local path = ProjectContext_recordImagePath(context, 0)
+        if app.fs.isFile(path) then
+            app.command.OpenFile { filename = path }
         else
             return showError("Need to record at least one snapshot to load time lapse.")
         end

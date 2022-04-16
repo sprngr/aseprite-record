@@ -18,7 +18,7 @@ This option will open up a dialog box that provides functionality take snapshots
 
 It requires there to be an active & saved sprite in order to run. The interval at which saves happen is based on [sprite change events](https://github.com/aseprite/api/blob/main/api/sprite.md#spriteevents) - when changes are made to the sprite, including undo/redo actions.
 
-The interval is configurable in the dialog, lower numbers means more frequent snapshots (and more frequent save dialog popups). If you change the active sprite in the app, automatic snapshots will keep a cached reference to the target sprite until you target a new one with the dialog. Usage of the Command Palette and Take Snapshot command can be used in parallel while this is running.
+The interval is configurable in the dialog, lower numbers means more frequent snapshots. If you change the active sprite in the app, automatic snapshots will keep a cached reference to the target sprite until you target a new one with the dialog. Usage of the Command Palette and Take Snapshot command can be used in parallel while this is running.
 
 Note: may be annoying with save dialogs popping up.
 
@@ -30,7 +30,7 @@ The functions of each button are described in detail below and are available as 
 
 ### Take Snapshot
 
-This option saves a flattened png copy of the visible layers of the current sprite. It is saved to a sibling folder named <name of sprite>_record. Each file will be saved with an incrementing count appended to the end of it. No modifications to your work are performed by this script, it only creates new files.
+This option saves a flattened png copy of the visible layers of the current sprite. It is saved to a sibling folder named `<name of sprite>__record`. Each file will be saved with an incrementing count appended to the end of it. No modifications to your work are performed by this script, it only creates new files.
 
 ### Open Time Lapse
 
