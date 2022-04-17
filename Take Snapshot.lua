@@ -1,6 +1,5 @@
 --[[
     Record v2.4 - Take Snapshot
-    Author: Michael Springer (@sprngr_)
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
     Source: https://github.com/sprngr/aseprite-record
@@ -8,27 +7,12 @@
 
 dofile(".lib/record-core.lua")
 
-local fileIncrement = 0
-local sprite = app.activeSprite
-
-local function setCurrentIncrement()
-    fileIncrement = 0
-    local incrementSet = false
-    while not incrementSet do
-        if (not app.fs.isFile(app.fs.joinPath(getSavePath(), getSaveFileName(fileIncrement)))) then
-            incrementSet = true
-        else
-            fileIncrement = fileIncrement + 1
-        end
-    end
-end
-
-if checkVersion()
-then
+if checkVersion() then
+    local sprite = app.activeSprite
     if sprite and app.fs.isFile(sprite.filename) then
-        setupFileStrings(sprite.filename)
-        setCurrentIncrement()
-        recordSnapshot(sprite, fileIncrement)
+        local autoSnapshot = AutoSnapshot_sharedInstance()
+        AutoSnapshot_setSprite(autoSnapshot, sprite)
+        AutoSnapshot_saveSnapshot(autoSnapshot)
     else
         return showError("File must be saved before able to run script.")
     end
