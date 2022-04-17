@@ -20,8 +20,6 @@ It requires there to be an active & saved sprite in order to run. The interval a
 
 The interval is configurable in the dialog, lower numbers means more frequent snapshots. If you change the active sprite in the app, automatic snapshots will keep a cached reference to the target sprite until you target a new one with the dialog. Usage of the Command Palette and Take Snapshot command can be used in parallel while this is running.
 
-Note: may be annoying with save dialogs popping up.
-
 ### Command Palette
 
 This option will open up a dialog box to leave up in your editor, giving you access to the functionality to take a snapshot & open the time lapse for the current sprite if any snapshots are saved for it.
