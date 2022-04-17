@@ -36,10 +36,38 @@ function ProjectContext_new(sprite)
     local self = {}
     self.fileName = app.fs.fileTitle(sprite.filename)
     self.filePath = app.fs.filePath(sprite.filename)
-    self.recordDirName = self.fileName .. "__record"
-    self.recordDirPath = app.fs.joinPath(self.filePath, self.recordDirName)
     self.recordIndexName = "_index.txt"
+
+    -- 2.x Target Directory Backwards Compatibility
+    self.recordDirNameLegacy = self.fileName .. "_record"
+    local legacyRecording = false
+    if app.fs.isDirectory(app.fs.joinPath(self.filePath, self.recordDirNameLegacy)) then
+        legacyRecording = true
+        self.recordDirName = self.recordDirNameLegacy
+    else
+        self.recordDirName = self.fileName .. "__record"
+    end
+
+    self.recordDirPath = app.fs.joinPath(self.filePath, self.recordDirName)
     self.recordIndexFile = app.fs.joinPath(self.recordDirPath, self.recordIndexName)
+
+    -- 2.x Add Missing Index File for Forward Compatibility
+    if legacyRecording and not app.fs.isFile(self.recordIndexFile) then
+        local recordIndexSet = false
+        local index = 0
+        while not recordIndexSet do
+            if not app.fs.isFile(ProjectContext_recordImagePath(self, index)) then
+                recordIndexSet = true
+                local path = self.recordIndexFile
+                local file = io.open(path, "w")
+                file:write("" .. index)
+                io.close(file)
+            else
+                index = index + 1
+            end
+        end
+    end
+
     return self
 end
 

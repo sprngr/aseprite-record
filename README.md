@@ -35,11 +35,3 @@ This option saves a flattened png copy of the visible layers of the current spri
 ### Open Time Lapse
 
 This will open the Aseprite dialog asking if you wish to load all sequenced files related as a gif. If you accept, it will load it as a cool time lapse of all your snapshots saved for the current sprite.
-
-## Migrating from 2.x to 3.x
-
-As of 3.x, there have been a few updates surrounding snapshot files and indexing - this only matters if you are intending to use the script with existing recording snapshots.
-
-Before running against existing recordings, make the following changes:
-1. Rename the recording directory to end with `__record` instead of `_record`.
-2. Write a file to the recording directory named `_index.txt` with the value being the last snapshot file's increment number, plus 1 (Example: file_3.png => 4).
