@@ -1,5 +1,5 @@
 --[[
-    Record v2.4 - Command Palette
+    Record v3.0 - Command Palette
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
     Source: https://github.com/sprngr/aseprite-record

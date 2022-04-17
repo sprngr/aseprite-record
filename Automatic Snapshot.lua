@@ -1,5 +1,5 @@
 --[[
-    Record v2.4 - Automatic Snapshot Controls
+    Record v3.0 - Automatic Snapshot Controls
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
     Source: https://github.com/sprngr/aseprite-record

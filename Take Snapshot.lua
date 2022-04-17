@@ -1,5 +1,5 @@
 --[[
-    Record v2.4 - Take Snapshot
+    Record v3.0 - Take Snapshot
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
     Source: https://github.com/sprngr/aseprite-record

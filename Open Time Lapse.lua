@@ -1,5 +1,5 @@
 --[[
-    Record v2.4 - Open Time Lapse
+    Record v3.0 - Open Time Lapse
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
     Source: https://github.com/sprngr/aseprite-record

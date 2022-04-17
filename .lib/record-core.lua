@@ -1,5 +1,5 @@
 --[[
-    Record v2.4 - Record Core Library
+    Record v3.0 - Record Core Library
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
     Source: https://github.com/sprngr/aseprite-record
@@ -44,7 +44,7 @@ function ProjectContext_new(sprite)
 end
 
 function ProjectContext_recordImagePath(self, index)
-    return app.fs.joinPath(self.recordDirPath, "" .. index .. ".png")
+    return app.fs.joinPath(self.recordDirPath, self.fileName .. "_" .. index .. ".png")
 end
 
 function AutoSnapshot_imagePathAt(self, index)
