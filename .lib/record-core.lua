@@ -15,12 +15,12 @@ function check_api_version()
 end
 
 function show_error(errorMsg)
-    local errorDlg = Dialog("Error")
-    errorDlg
+    local error_dialog = Dialog("Error")
+    error_dialog
         :label { text = errorMsg }
         :newrow()
-        :button { text = "Close", onclick = function() errorDlg:close() end }
-    errorDlg:show()
+        :button { text = "Close", onclick = function() error_dialog:close() end }
+    error_dialog:show()
 end
 
 function get_active_frame_number()
@@ -32,38 +32,38 @@ function get_active_frame_number()
     end
 end
 
-function get_new_project_context(sprite)
+function get_recording_context(sprite)
     local self = {}
-    self.fileName = app.fs.fileTitle(sprite.filename)
-    self.filePath = app.fs.filePath(sprite.filename)
-    self.recordIndexName = "_index.txt"
+    self.sprite_file_name = app.fs.fileTitle(sprite.filename)
+    self.sprite_file_path = app.fs.filePath(sprite.filename)
+    self.index_file_name = "_index.txt"
 
     -- 2.x Target Directory Backwards Compatibility
-    self.recordDirNameLegacy = self.fileName .. "_record"
-    local legacyRecording = false
-    if app.fs.isDirectory(app.fs.joinPath(self.filePath, self.recordDirNameLegacy)) then
-        legacyRecording = true
-        self.recordDirName = self.recordDirNameLegacy
+    self.record_directory_name_legacy = self.sprite_file_name .. "_record"
+    local is_legacy_recording = false
+    if app.fs.isDirectory(app.fs.joinPath(self.sprite_file_path, self.record_directory_name_legacy)) then
+        is_legacy_recording = true
+        self.record_directory_name = self.record_directory_name_legacy
     else
-        self.recordDirName = self.fileName .. "__record"
+        self.record_directory_name = self.sprite_file_name .. "__record"
     end
 
-    self.recordDirPath = app.fs.joinPath(self.filePath, self.recordDirName)
-    self.recordIndexFile = app.fs.joinPath(self.recordDirPath, self.recordIndexName)
+    self.record_directory_path = app.fs.joinPath(self.sprite_file_path, self.record_directory_name)
+    self.index_file_path = app.fs.joinPath(self.record_directory_path, self.index_file_name)
 
     -- 2.x Add Missing Index File for Forward Compatibility
-    if legacyRecording and not app.fs.isFile(self.recordIndexFile) then
-        local recordIndexSet = false
-        local index = 0
-        while not recordIndexSet do
-            if not app.fs.isFile(get_contextual_recording_image_path(self, index)) then
-                recordIndexSet = true
-                local path = self.recordIndexFile
+    if is_legacy_recording and not app.fs.isFile(self.index_file_path) then
+        local is_index_set = false
+        local current_index = 0
+        while not is_index_set do
+            if not app.fs.isFile(get_contextual_recording_image_path(self, current_index)) then
+                is_index_set = true
+                local path = self.index_file_path
                 local file = io.open(path, "w")
-                file:write("" .. index)
+                file:write("" .. current_index)
                 io.close(file)
             else
-                index = index + 1
+                current_index = current_index + 1
             end
         end
     end
@@ -72,11 +72,11 @@ function get_new_project_context(sprite)
 end
 
 function get_contextual_recording_image_path(self, index)
-    return app.fs.joinPath(self.recordDirPath, self.fileName .. "_" .. index .. ".png")
+    return app.fs.joinPath(self.record_directory_path, self.sprite_file_name .. "_" .. index .. ".png")
 end
 
-function get_snapshot_image_path_at_index(self, index)
-    return get_contextual_recording_image_path(self.projectContext, index)
+function get_recording_image_path_at_index(self, index)
+    return get_contextual_recording_image_path(self.context, index)
 end
 
 function is_snapshot_valid(self)
@@ -94,7 +94,7 @@ function is_snapshot_active(self)
 end
 
 local function get_snapshot_recording_index(self)
-    local path = self.projectContext.recordIndexFile
+    local path = self.context.index_file_path
     if not app.fs.isFile(path) then
         return 0
     end
@@ -106,14 +106,14 @@ end
 
 local function increment_snapshot_recording_index(self)
     local index = get_snapshot_recording_index(self) + 1
-    local path = self.projectContext.recordIndexFile
+    local path = self.context.index_file_path
     local file = io.open(path, "w")
     file:write("" .. index)
     io.close(file)
 end
 
 function get_snapshot_current_image_path(self)
-    return get_snapshot_image_path_at_index(self, get_snapshot_recording_index(self))
+    return get_recording_image_path_at_index(self, get_snapshot_recording_index(self))
 end
 
 function save_snapshot(self)
@@ -128,11 +128,11 @@ local function initialize_snapshot(self, sprite)
     self.enabled = false
     self.snapDelay = 1
     self.snapIncrement = 0
-    self.projectContext = nil
+    self.context = nil
     self.sprite = nil
     if sprite then
         self.sprite = sprite
-        self.projectContext = get_new_project_context(sprite)
+        self.context = get_recording_context(sprite)
     end
 end
 
@@ -183,5 +183,5 @@ end
 local snapshot_instance = get_new_snapshot()
 
 function get_snapshot()
-    return snapshot_instance
+    return get_new_snapshot()
 end

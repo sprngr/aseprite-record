@@ -14,6 +14,6 @@ if check_api_version() then
         set_snapshot_sprite(autoSnapshot, sprite)
         save_snapshot(autoSnapshot)
     else
-        return show_error("File must be saved before able to run script.")
+        return show_error("File must be saved before you are able to run this script.")
     end
 end

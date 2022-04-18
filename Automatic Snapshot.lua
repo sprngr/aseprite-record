@@ -34,7 +34,7 @@ local function enable_auto_snapshot(dialog)
     }
     dialog:modify {
         id = "target",
-        text = autoSnapshot.projectContext.fileName
+        text = autoSnapshot.context.sprite_file_name
     }
 end
 
@@ -57,44 +57,44 @@ local function disable_auto_snapshot(dialog)
 end
 
 if check_api_version() then
-    local mainDlg = Dialog {
+    local main_dialog = Dialog {
         title = "Record - Auto Snapshot",
         onclose = function()
             reset_snapshot(autoSnapshot)
         end
     }
 
-    mainDlg:label {
+    main_dialog:label {
         id = "target",
         label = "Target:",
         text = "<NONE>"
     }
-    mainDlg:label {
+    main_dialog:label {
         id = "status",
         label = "Status:",
         text = "OFF"
     }
-    mainDlg:number {
+    main_dialog:number {
         id = "delay",
         label = "Action Delay:",
         focus = true,
         text = tostring(autoSnapshot.snapDelay),
         onchange = function()
-            autoSnapshot.snapDelay = mainDlg.data.delay
+            autoSnapshot.snapDelay = main_dialog.data.delay
             autoSnapshot.snapIncrement = 0
         end
     }
-    mainDlg:separator {}
-    mainDlg:button {
+    main_dialog:separator {}
+    main_dialog:button {
         id = "toggle",
         text = "Start",
         onclick = function()
             if is_snapshot_active(autoSnapshot) then
-                disable_auto_snapshot(mainDlg)
+                disable_auto_snapshot(main_dialog)
             else
-                enable_auto_snapshot(mainDlg)
+                enable_auto_snapshot(main_dialog)
             end
         end
     }
-    mainDlg:show { wait = false }
+    main_dialog:show { wait = false }
 end

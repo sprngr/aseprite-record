@@ -24,31 +24,31 @@ local function open_time_lapse()
         return
     end
 
-    local path = get_snapshot_image_path_at_index(autoSnapshot, 0)
+    local path = get_recording_image_path_at_index(autoSnapshot, 0)
     if app.fs.isFile(path) then
         app.command.OpenFile { filename = path }
     else
-        show_error("You need to make at least one snapshot to load a time lapse.")
+        show_error("You need to record at least one snapshot to load a time lapse.")
     end
 end
 
 if check_api_version() then
-    local mainDlg = Dialog {
+    local main_dialog = Dialog {
         title = "Record - Command Palette"
     }
 
     -- Creates the main dialog box
-    mainDlg:button {
+    main_dialog:button {
         text = "Take Snapshot",
         onclick = function()
             take_snapshot()
         end
     }
-    mainDlg:button {
+    main_dialog:button {
         text = "Open Time Lapse",
         onclick = function()
             open_time_lapse()
         end
     }
-    mainDlg:show { wait = false }
+    main_dialog:show { wait = false }
 end
