@@ -1,5 +1,5 @@
 --[[
-    Record v3.0 - Automatic Snapshot Controls
+    Record v3.x - Automatic Snapshot Controls
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
     Source: https://github.com/sprngr/aseprite-record
@@ -7,22 +7,22 @@
 
 dofile(".lib/record-core.lua")
 
-local autoSnapshot = AutoSnapshot_sharedInstance()
+local autoSnapshot = get_snapshot()
 
-local function takeAutoSnapshot()
-    AutoSnapshot_tick(autoSnapshot)
+local function take_auto_snapshot()
+    auto_save_snapshot(autoSnapshot)
 end
 
-local function enableAutoSnapshot(dialog)
-    AutoSnapshot_updateSprite(autoSnapshot)
+local function enable_auto_snapshot(dialog)
+    update_snapshot_sprite(autoSnapshot)
 
-    autoSnapshot.enabled = AutoSnapshot_isValid(autoSnapshot)
+    autoSnapshot.enabled = is_snapshot_valid(autoSnapshot)
     if not autoSnapshot.enabled then
         return
     end
 
     autoSnapshot.snapIncrement = 0
-    autoSnapshot.sprite.events:on("change", takeAutoSnapshot)
+    autoSnapshot.sprite.events:on("change", take_auto_snapshot)
 
     dialog:modify {
         id = "status",
@@ -38,13 +38,13 @@ local function enableAutoSnapshot(dialog)
     }
 end
 
-local function disableAutoSnapshot(dialog)
+local function disable_auto_snapshot(dialog)
     autoSnapshot.enabled = false
-    if not AutoSnapshot_isValid(autoSnapshot) then
+    if not is_snapshot_valid(autoSnapshot) then
         return
     end
 
-    autoSnapshot.sprite.events:off(takeAutoSnapshot)
+    autoSnapshot.sprite.events:off(take_auto_snapshot)
 
     dialog:modify {
         id = "status",
@@ -56,11 +56,11 @@ local function disableAutoSnapshot(dialog)
     }
 end
 
-if checkVersion() then
+if check_api_version() then
     local mainDlg = Dialog {
         title = "Record - Auto Snapshot",
         onclose = function()
-            AutoSnapshot_reset(autoSnapshot)
+            reset_snapshot(autoSnapshot)
         end
     }
 
@@ -89,10 +89,10 @@ if checkVersion() then
         id = "toggle",
         text = "Start",
         onclick = function()
-            if AutoSnapshot_isActive(autoSnapshot) then
-                disableAutoSnapshot(mainDlg)
+            if is_snapshot_active(autoSnapshot) then
+                disable_auto_snapshot(mainDlg)
             else
-                enableAutoSnapshot(mainDlg)
+                enable_auto_snapshot(mainDlg)
             end
         end
     }

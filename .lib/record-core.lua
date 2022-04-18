@@ -1,20 +1,20 @@
 --[[
-    Record v3.0 - Record Core Library
+    Record v3.x - Record Core Library
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
     Source: https://github.com/sprngr/aseprite-record
 ]]
 
-function checkVersion()
+function check_api_version()
     if app.apiVersion < 15 then
-        showError("This script requires Aseprite v1.2.30 or newer. Please update Aseprite to continue.")
+        show_error("This script requires Aseprite v1.2.30 or newer. Please update Aseprite to continue.")
         return false
     else
         return true
     end
 end
 
-function showError(errorMsg)
+function show_error(errorMsg)
     local errorDlg = Dialog("Error")
     errorDlg
         :label { text = errorMsg }
@@ -23,16 +23,16 @@ function showError(errorMsg)
     errorDlg:show()
 end
 
-function activeFrameNumber()
-    local f = app.activeFrame
-    if f == nil then
+function get_active_frame_number()
+    local frame = app.activeFrame
+    if frame == nil then
         return 1
     else
-        return f
+        return frame
     end
 end
 
-function ProjectContext_new(sprite)
+function get_new_project_context(sprite)
     local self = {}
     self.fileName = app.fs.fileTitle(sprite.filename)
     self.filePath = app.fs.filePath(sprite.filename)
@@ -56,7 +56,7 @@ function ProjectContext_new(sprite)
         local recordIndexSet = false
         local index = 0
         while not recordIndexSet do
-            if not app.fs.isFile(ProjectContext_recordImagePath(self, index)) then
+            if not app.fs.isFile(get_contextual_recording_image_path(self, index)) then
                 recordIndexSet = true
                 local path = self.recordIndexFile
                 local file = io.open(path, "w")
@@ -71,29 +71,29 @@ function ProjectContext_new(sprite)
     return self
 end
 
-function ProjectContext_recordImagePath(self, index)
+function get_contextual_recording_image_path(self, index)
     return app.fs.joinPath(self.recordDirPath, self.fileName .. "_" .. index .. ".png")
 end
 
-function AutoSnapshot_imagePathAt(self, index)
-    return ProjectContext_recordImagePath(self.projectContext, index)
+function get_snapshot_image_path_at_index(self, index)
+    return get_contextual_recording_image_path(self.projectContext, index)
 end
 
-function AutoSnapshot_isValid(self)
+function is_snapshot_valid(self)
     if self.sprite then
         return true
     end
     return false
 end
 
-function AutoSnapshot_isActive(self)
-    if not AutoSnapshot_isValid(self) then
+function is_snapshot_active(self)
+    if not is_snapshot_valid(self) then
         return false
     end
     return self.enabled
 end
 
-local function _AutoSnapshot_getRecordIndex(self)
+local function get_snapshot_recording_index(self)
     local path = self.projectContext.recordIndexFile
     if not app.fs.isFile(path) then
         return 0
@@ -104,67 +104,67 @@ local function _AutoSnapshot_getRecordIndex(self)
     return tonumber(contents)
 end
 
-local function _AutoSnapshot_incRecordIndex(self)
-    local index = _AutoSnapshot_getRecordIndex(self) + 1
+local function increment_snapshot_recording_index(self)
+    local index = get_snapshot_recording_index(self) + 1
     local path = self.projectContext.recordIndexFile
     local file = io.open(path, "w")
     file:write("" .. index)
     io.close(file)
 end
 
-function AutoSnapshot_currentImagePath(self)
-    return AutoSnapshot_imagePathAt(self, _AutoSnapshot_getRecordIndex(self))
+function get_snapshot_current_image_path(self)
+    return get_snapshot_image_path_at_index(self, get_snapshot_recording_index(self))
 end
 
-function AutoSnapshot_saveSnapshot(self)
-    local path = AutoSnapshot_currentImagePath(self)
+function save_snapshot(self)
+    local path = get_snapshot_current_image_path(self)
     local image = Image(self.sprite)
-    image:drawSprite(self.sprite, activeFrameNumber())
+    image:drawSprite(self.sprite, get_active_frame_number())
     image:saveAs(path)
-    _AutoSnapshot_incRecordIndex(self)
+    increment_snapshot_recording_index(self)
 end
 
-local function _AutoSnapshot_init(self, sprite)
-    self.enabled        = false
-    self.snapDelay      = 1
-    self.snapIncrement  = 0
+local function initialize_snapshot(self, sprite)
+    self.enabled = false
+    self.snapDelay = 1
+    self.snapIncrement = 0
     self.projectContext = nil
-    self.sprite         = nil
+    self.sprite = nil
     if sprite then
-        self.sprite         = sprite
-        self.projectContext = ProjectContext_new(sprite)
+        self.sprite = sprite
+        self.projectContext = get_new_project_context(sprite)
     end
 end
 
-local function _AutoSnapshot_new()
-    self = {}
-    _AutoSnapshot_init(self, nil)
+local function get_new_snapshot()
+    local self = {}
+    initialize_snapshot(self, nil)
     return self
 end
 
-function AutoSnapshot_reset(self)
-    _AutoSnapshot_init(self, nil)
+function reset_snapshot(self)
+    initialize_snapshot(self, nil)
 end
 
-function AutoSnapshot_setSprite(self, sprite)
+function set_snapshot_sprite(self, sprite)
     if not app.fs.isFile(sprite.filename) then
-        return showError("File must be saved before able to run script.")
+        return show_error("File must be saved before able to run script.")
     end
 
     if (not self.sprite or self.sprite ~= sprite) then
-        _AutoSnapshot_init(self, sprite)
+        initialize_snapshot(self, sprite)
     end
 end
 
-function AutoSnapshot_updateSprite(self)
+function update_snapshot_sprite(self)
     local sprite = app.activeSprite
     if not sprite then
-        return showError("No active sprite available.")
+        return show_error("No active sprite available.")
     end
-    AutoSnapshot_setSprite(self, sprite)
+    set_snapshot_sprite(self, sprite)
 end
 
-function AutoSnapshot_tick(self)
+function auto_save_snapshot(self)
     if not self.enabled then
         return
     end
@@ -177,11 +177,11 @@ function AutoSnapshot_tick(self)
         return
     end
     self.snapIncrement = 0
-    AutoSnapshot_saveSnapshot(self)
+    save_snapshot(self)
 end
 
-local _AutoSnapshot_instance = _AutoSnapshot_new()
+local snapshot_instance = get_new_snapshot()
 
-function AutoSnapshot_sharedInstance()
-    return _AutoSnapshot_instance
+function get_snapshot()
+    return snapshot_instance
 end
