@@ -33,3 +33,7 @@ This option saves a flattened png copy of the visible layers of the current spri
 ### Open Time Lapse
 
 This will open the Aseprite dialog asking if you wish to load all sequenced files related as a gif. If you accept, it will load it as a cool time lapse of all your snapshots saved for the current sprite.
+
+## Contributing
+
+If any contributions are made, please be sure the code added/modified aligns with the [LuaRocks Lua Style Guide](https://github.com/luarocks/lua-style-guide).

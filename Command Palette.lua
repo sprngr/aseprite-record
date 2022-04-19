@@ -1,5 +1,5 @@
 --[[
-    Record v3.0 - Command Palette
+    Record v3.x - Command Palette
     License: MIT
     Website: https://sprngr.itch.io/aseprite-record
     Source: https://github.com/sprngr/aseprite-record
@@ -7,48 +7,48 @@
 
 dofile(".lib/record-core.lua")
 
-local autoSnapshot = AutoSnapshot_sharedInstance()
+local snapshot = get_snapshot()
 
-local function takeSnapshot()
-    AutoSnapshot_updateSprite(autoSnapshot)
-    if not AutoSnapshot_isValid(autoSnapshot) then
+local function take_snapshot()
+    update_snapshot_sprite(snapshot)
+    if not is_snapshot_valid(snapshot) then
         return
     end
 
-    AutoSnapshot_saveSnapshot(autoSnapshot)
+    save_snapshot(snapshot)
 end
 
-local function openTimeLapse()
-    AutoSnapshot_updateSprite(autoSnapshot)
-    if not AutoSnapshot_isValid(autoSnapshot) then
+local function open_time_lapse()
+    update_snapshot_sprite(snapshot)
+    if not is_snapshot_valid(snapshot) then
         return
     end
 
-    local path = AutoSnapshot_imagePathAt(autoSnapshot, 0)
+    local path = get_recording_image_path_at_index(snapshot, 0)
     if app.fs.isFile(path) then
         app.command.OpenFile { filename = path }
     else
-        showError("You need to make at least one snapshot to load a time lapse.")
+        show_error(error_messages["snapshot_required"])
     end
 end
 
-if checkVersion() then
-    local mainDlg = Dialog {
+if check_api_version() then
+    local main_dialog = Dialog {
         title = "Record - Command Palette"
     }
 
     -- Creates the main dialog box
-    mainDlg:button {
+    main_dialog:button {
         text = "Take Snapshot",
         onclick = function()
-            takeSnapshot()
+            take_snapshot()
         end
     }
-    mainDlg:button {
+    main_dialog:button {
         text = "Open Time Lapse",
         onclick = function()
-            openTimeLapse()
+            open_time_lapse()
         end
     }
-    mainDlg:show { wait = false }
+    main_dialog:show { wait = false }
 end
