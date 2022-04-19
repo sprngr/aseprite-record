@@ -5,11 +5,12 @@
     Source: https://github.com/sprngr/aseprite-record
 ]]
 
-error_messages = {}
-error_messages["invalid_api_version"] = "This script requires Aseprite v1.2.30 or newer. Please update Aseprite to continue."
-error_messages["no_active_sprite"] = "No active sprite is available."
-error_messages["snapshot_required"] = "You need to take at least one snapshot to load a time lapse."
-error_messages["save_required"] = "A sprite must be saved before you are able to run this script."
+error_messages = {
+    invalid_api_version = "This script requires Aseprite v1.2.30 or newer. Please update Aseprite to continue.",
+    no_active_sprite = "No active sprite is available.",
+    save_required = "A sprite must be saved before you are able to run this script.",
+    snapshot_required = "You need to take at least one snapshot to load a time lapse.",
+}
 
 -- Utility functions
 function check_api_version()
@@ -99,8 +100,7 @@ function get_recording_context(sprite)
         while not is_index_set do
             if not app.fs.isFile(get_contextual_recording_image_path(self, current_index)) then
                 is_index_set = true
-                local path = self.index_file
-                local file = io.open(path, "w")
+                local file = io.open(self.index_file, "w")
                 file:write("" .. current_index)
                 io.close(file)
             else
