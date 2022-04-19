@@ -7,44 +7,19 @@
 
 dofile(".lib/record-core.lua")
 
-local autoSnapshot = get_snapshot()
+local snapshot = get_snapshot()
 
 local function take_auto_snapshot()
-    auto_save_snapshot(autoSnapshot)
-end
-
-local function enable_auto_snapshot(dialog)
-    update_snapshot_sprite(autoSnapshot)
-
-    autoSnapshot.enabled = is_snapshot_valid(autoSnapshot)
-    if not autoSnapshot.enabled then
-        return
-    end
-
-    autoSnapshot.snapIncrement = 0
-    autoSnapshot.sprite.events:on("change", take_auto_snapshot)
-
-    dialog:modify {
-        id = "status",
-        text = "RUNNING"
-    }
-    dialog:modify {
-        id = "toggle",
-        text = "Stop"
-    }
-    dialog:modify {
-        id = "target",
-        text = autoSnapshot.context.sprite_file_name
-    }
+    auto_save_snapshot(snapshot)
 end
 
 local function disable_auto_snapshot(dialog)
-    autoSnapshot.enabled = false
-    if not is_snapshot_valid(autoSnapshot) then
+    snapshot.auto_snap_enabled = false
+    if not is_snapshot_valid(snapshot) then
         return
     end
 
-    autoSnapshot.sprite.events:off(take_auto_snapshot)
+    snapshot.sprite.events:off(take_auto_snapshot)
 
     dialog:modify {
         id = "status",
@@ -56,11 +31,36 @@ local function disable_auto_snapshot(dialog)
     }
 end
 
+local function enable_auto_snapshot(dialog)
+    update_snapshot_sprite(snapshot)
+
+    snapshot.auto_snap_enabled = is_snapshot_valid(snapshot)
+    if not snapshot.auto_snap_enabled then
+        return
+    end
+
+    snapshot.auto_snap_increment = 0
+    snapshot.sprite.events:on("change", take_auto_snapshot)
+
+    dialog:modify {
+        id = "status",
+        text = "RUNNING"
+    }
+    dialog:modify {
+        id = "toggle",
+        text = "Stop"
+    }
+    dialog:modify {
+        id = "target",
+        text = snapshot.context.sprite_file_name
+    }
+end
+
 if check_api_version() then
     local main_dialog = Dialog {
         title = "Record - Auto Snapshot",
         onclose = function()
-            reset_snapshot(autoSnapshot)
+            reset_snapshot(snapshot)
         end
     }
 
@@ -78,10 +78,10 @@ if check_api_version() then
         id = "delay",
         label = "Action Delay:",
         focus = true,
-        text = tostring(autoSnapshot.snapDelay),
+        text = tostring(snapshot.auto_snap_delay),
         onchange = function()
-            autoSnapshot.snapDelay = main_dialog.data.delay
-            autoSnapshot.snapIncrement = 0
+            snapshot.auto_snap_delay = main_dialog.data.delay
+            snapshot.auto_snap_increment = 0
         end
     }
     main_dialog:separator {}
@@ -89,7 +89,7 @@ if check_api_version() then
         id = "toggle",
         text = "Start",
         onclick = function()
-            if is_snapshot_active(autoSnapshot) then
+            if is_snapshot_active(snapshot) then
                 disable_auto_snapshot(main_dialog)
             else
                 enable_auto_snapshot(main_dialog)
