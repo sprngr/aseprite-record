@@ -15,9 +15,9 @@ if check_api_version() then
         if app.fs.isFile(path) then
             app.command.OpenFile { filename = path }
         else
-            return show_error(error_messages["snapshot_required"])
+            return show_error(error_messages.snapshot_required)
         end
     else
-        return show_error(error_messages["save_required"])
+        return show_error(error_messages.save_required)
     end
 end

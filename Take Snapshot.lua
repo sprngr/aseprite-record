@@ -14,6 +14,6 @@ if check_api_version() then
         set_snapshot_sprite(snapshot, sprite)
         save_snapshot(snapshot)
     else
-        return show_error(error_messages["save_required"])
+        return show_error(error_messages.save_required)
     end
 end

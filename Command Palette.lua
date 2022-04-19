@@ -28,7 +28,7 @@ local function open_time_lapse()
     if app.fs.isFile(path) then
         app.command.OpenFile { filename = path }
     else
-        show_error(error_messages["snapshot_required"])
+        show_error(error_messages.snapshot_required)
     end
 end
 

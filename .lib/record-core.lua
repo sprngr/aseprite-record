@@ -15,7 +15,7 @@ error_messages = {
 -- Utility functions
 function check_api_version()
     if app.apiVersion < 15 then
-        show_error(error_messages["invalid_api_version"])
+        show_error(error_messages.invalid_api_version)
         return false
     else
         return true
@@ -170,7 +170,7 @@ end
 
 function set_snapshot_sprite(self, sprite)
     if not app.fs.isFile(sprite.filename) then
-        return show_error(error_messages["save_required"])
+        return show_error(error_messages.save_required)
     end
 
     if (not self.sprite or self.sprite ~= sprite) then
@@ -181,7 +181,7 @@ end
 function update_snapshot_sprite(self)
     local sprite = app.activeSprite
     if not sprite then
-        return show_error(error_messages["no_active_sprite"])
+        return show_error(error_messages.no_active_sprite)
     end
     set_snapshot_sprite(self, sprite)
 end
