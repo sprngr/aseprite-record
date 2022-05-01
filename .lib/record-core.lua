@@ -48,6 +48,7 @@ function RecordingContext:get_recording_index()
         return 0
     end
     local file = io.open(path, "r")
+    assert(file)
     local contents = file:read()
     io.close(file)
     return tonumber(contents)
@@ -56,6 +57,7 @@ end
 function RecordingContext:set_recording_index(index)
     local path = self.index_file
     local file = io.open(path, "w")
+    assert(file)
     file:write("" .. index)
     io.close(file)
 end
@@ -183,12 +185,50 @@ function Snapshot:_get_current_image()
     return image
 end
 
+function Snapshot:_get_saved_image_content(index)
+    if index < 0 then
+        return nil
+    end
+    -- This intentionally does not do anything "smart" such as scanning the
+    -- directory if gaps exist because that is O(N) at IO speeds and on every
+    -- snapshot (where N is the current snapshot index).
+    local path = self:get_recording_image_path(index)
+    if not app.fs.isFile(path) then
+        return nil
+    end
+
+    -- NOTE(teding): Unfortunately `Image { fromFile = path }`:
+    --      * causes load popups
+    --      * pollutes "recent files"
+    -- Anyway, this seems more than fast enough for human inputs. I tried lots
+    -- of very very fast changes on large detailed canvases, had no issues, and
+    -- have a computer that is average by 2022 standards.
+    local file = io.open(path, "rb")
+    assert(file)
+    local content = file:read("a")
+    io.close(file)
+    return content
+end
+
 function Snapshot:save()
-    local index = self.context:get_recording_index()
     local image = self:_get_current_image()
+    local index = self.context:get_recording_index()
     local path = self:get_recording_image_path(index)
     image:saveAs(path)
-    self:_increment_recording_index()
+
+    local image_changed = true
+    local prev_content = self:_get_saved_image_content(index - 1)
+    if prev_content ~= nil then
+        local curr_content = self:_get_saved_image_content(index)
+        assert(curr_content ~= nil)
+        if prev_content == curr_content then
+            image_changed = false
+        end
+    end
+
+    if image_changed then
+        self:_increment_recording_index()
+    end
 end
 
 function Snapshot:set_sprite(sprite)
