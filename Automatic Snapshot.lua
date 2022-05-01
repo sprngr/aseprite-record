@@ -7,15 +7,15 @@
 
 dofile(".lib/record-core.lua")
 
-local snapshot = get_snapshot()
+local snapshot = Snapshot.new()
 
 local function take_auto_snapshot()
-    auto_save_snapshot(snapshot)
+    snapshot:auto_save()
 end
 
 local function disable_auto_snapshot(dialog)
     snapshot.auto_snap_enabled = false
-    if not is_snapshot_valid(snapshot) then
+    if not snapshot:is_valid() then
         return
     end
 
@@ -32,9 +32,9 @@ local function disable_auto_snapshot(dialog)
 end
 
 local function enable_auto_snapshot(dialog)
-    update_snapshot_sprite(snapshot)
+    snapshot:update_sprite()
 
-    snapshot.auto_snap_enabled = is_snapshot_valid(snapshot)
+    snapshot.auto_snap_enabled = snapshot:is_valid()
     if not snapshot.auto_snap_enabled then
         return
     end
@@ -60,7 +60,7 @@ if check_api_version() then
     local main_dialog = Dialog {
         title = "Record - Auto Snapshot",
         onclose = function()
-            reset_snapshot(snapshot)
+            snapshot:reset()
         end
     }
 
@@ -89,7 +89,7 @@ if check_api_version() then
         id = "toggle",
         text = "Start",
         onclick = function()
-            if is_snapshot_active(snapshot) then
+            if snapshot:is_active() then
                 disable_auto_snapshot(main_dialog)
             else
                 enable_auto_snapshot(main_dialog)

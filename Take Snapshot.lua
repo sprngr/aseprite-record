@@ -10,9 +10,9 @@ dofile(".lib/record-core.lua")
 if check_api_version() then
     local sprite = app.activeSprite
     if sprite and app.fs.isFile(sprite.filename) then
-        local snapshot = get_snapshot()
-        set_snapshot_sprite(snapshot, sprite)
-        save_snapshot(snapshot)
+        local snapshot = Snapshot.new()
+        snapshot:set_sprite(sprite)
+        snapshot:save()
     else
         return show_error(error_messages.save_required)
     end
