@@ -23,7 +23,7 @@ local function open_time_lapse()
         return
     end
 
-    local path = snapshot:get_recording_image_path_at_index(0)
+    local path = snapshot:get_recording_image_path(0)
     if app.fs.isFile(path) then
         app.command.OpenFile { filename = path }
     else
