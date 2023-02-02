@@ -184,7 +184,7 @@ function Snapshot:auto_save()
 end
 
 function Snapshot:_get_current_image()
-    local image = Image(self.sprite)
+    local image = Image(self.sprite.width, self.sprite.height, self.sprite.colorMode)
     image:drawSprite(self.sprite, get_active_frame_number())
     return image
 end
@@ -208,7 +208,10 @@ function Snapshot:save()
     local image = self:_get_current_image()
     local index = self.context:get_recording_index()
     local path = self:get_recording_image_path(index)
-    image:saveAs(path)
+    image:saveAs{
+        filename = path, 
+        palette = self.sprite.palettes[1]
+    }
 
     local image_changed = true
     local prev_content = self:_get_saved_image_content(index - 1)
