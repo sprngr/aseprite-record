@@ -16,6 +16,8 @@ error_messages = {
     snapshot_required = "You need to take at least one snapshot to load a time lapse.",
 }
 
+local _auto_snap_delay = 1
+
 -- Utility functions
 function check_api_version()
     if app.apiVersion < 15 then
@@ -120,7 +122,7 @@ Snapshot = {}
 
 function Snapshot:_initialize(sprite)
     self.auto_snap_enabled = false
-    self.auto_snap_delay = 1
+    self.auto_snap_delay = _auto_snap_delay
     self.auto_snap_increment = 0
     self.context = nil
 
@@ -323,7 +325,8 @@ if check_api_version() then
         focus = true,
         text = tostring(snapshot.auto_snap_delay),
         onchange = function()
-            snapshot.auto_snap_delay = main_dialog.data.delay
+            _auto_snap_delay = main_dialog.data.delay
+            snapshot.auto_snap_delay = _auto_snap_delay
             snapshot.auto_snap_increment = 0
         end
     }
