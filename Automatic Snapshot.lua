@@ -115,6 +115,10 @@ function RecordingContext:_promote_v2_to_v3()
 end
 
 function RecordingContext:get_recording_image_path(index)
+    if not app.fs.isDirectory(self.record_directory_path) then
+        app.fs.makeDirectory(self.record_directory_path)
+    end
+
     return app.fs.joinPath(self.record_directory_path, self.sprite_file_name .. "_" .. index .. ".png")
 end
 
@@ -210,6 +214,7 @@ function Snapshot:save()
     local image = self:_get_current_image()
     local index = self.context:get_recording_index()
     local path = self:get_recording_image_path(index)
+    
     image:saveAs{
         filename = path, 
         palette = self.sprite.palettes[1]
