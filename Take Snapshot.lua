@@ -36,7 +36,7 @@ function show_error(error_msg)
 end
 
 local function get_active_frame_number()
-    local frame = app.activeFrame
+    local frame = app.frame.frameNumber
     if frame == nil then
         return 1
     else
@@ -187,12 +187,6 @@ function Snapshot:auto_save()
     self:save()
 end
 
-function Snapshot:_get_current_image()
-    local image = Image(self.sprite.width, self.sprite.height, self.sprite.colorMode)
-    image:drawSprite(self.sprite, get_active_frame_number())
-    return image
-end
-
 function Snapshot:_get_saved_image_content(index)
     if index < 0 then
         return nil
@@ -209,9 +203,30 @@ function Snapshot:_get_saved_image_content(index)
 end
 
 function Snapshot:save()
-    local image = self:_get_current_image()
     local index = self.context:get_recording_index()
     local path = self:get_recording_image_path(index)
+    
+    -- Flatten the current frame without modifying the sprite
+    local frame_number = get_active_frame_number()
+    local frame = self.sprite.frames[frame_number]
+    
+    -- Create a new image with the sprite's full size
+    local image = Image(ImageSpec{
+        width = self.sprite.width,
+        height = self.sprite.height,
+        colorMode = self.sprite.colorMode
+    })
+    
+    -- Draw each layer in the frame onto the image
+    for _, layer in ipairs(self.sprite.layers) do
+        if not layer.isGroup and layer.isVisible then
+            local cel = layer:cel(frame)
+            if cel then
+                image:drawImage(cel.image, cel.position)
+            end
+        end
+    end
+    
     image:saveAs{
         filename = path, 
         palette = self.sprite.palettes[1]
@@ -243,7 +258,7 @@ function Snapshot:set_sprite(sprite)
 end
 
 function Snapshot:update_sprite()
-    local sprite = app.activeSprite
+    local sprite = app.sprite
     if not sprite then
         return show_error(error_messages.no_active_sprite)
     end
@@ -255,7 +270,7 @@ end
 ]]
 
 if check_api_version() then
-    local sprite = app.activeSprite
+    local sprite = app.sprite
     if sprite and app.fs.isFile(sprite.filename) then
         local snapshot = Snapshot.new()
         snapshot:set_sprite(sprite)
