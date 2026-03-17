@@ -218,14 +218,23 @@ function Snapshot:save()
     })
     
     -- Draw each layer in the frame onto the image
-    for _, layer in ipairs(self.sprite.layers) do
-        if not layer.isGroup and layer.isVisible then
-            local cel = layer:cel(frame)
-            if cel then
-                image:drawImage(cel.image, cel.position)
+    local function draw_layers(layers)
+        for _, layer in ipairs(layers) do
+            if layer.isVisible then
+                if layer.isGroup then
+                    -- Recursively draw layers within the group
+                    draw_layers(layer.layers)
+                else
+                    local cel = layer:cel(frame)
+                    if cel then
+                        image:drawImage(cel.image, cel.position)
+                    end
+                end
             end
         end
     end
+    
+    draw_layers(self.sprite.layers)
     
     image:saveAs{
         filename = path, 
