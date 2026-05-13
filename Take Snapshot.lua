@@ -210,11 +210,11 @@ function Snapshot:save()
     local frame_number = get_active_frame_number()
     local frame = self.sprite.frames[frame_number]
     
-    -- Create a new image with the sprite's full size
+    -- Create an RGB image for proper transparency handling during compositing
     local image = Image(ImageSpec{
         width = self.sprite.width,
         height = self.sprite.height,
-        colorMode = self.sprite.colorMode
+        colorMode = ColorMode.RGB
     })
     
     -- Draw each layer in the frame onto the image
@@ -227,7 +227,8 @@ function Snapshot:save()
                 else
                     local cel = layer:cel(frame)
                     if cel then
-                        image:drawImage(cel.image, cel.position)
+                        -- Use layer opacity when drawing
+                        image:drawImage(cel.image, cel.position, layer.opacity)
                     end
                 end
             end
@@ -236,8 +237,10 @@ function Snapshot:save()
     
     draw_layers(self.sprite.layers)
     
+    -- Save the RGB composite directly as PNG
+    -- PNG format preserves transparency properly across all color modes
     image:saveAs{
-        filename = path, 
+        filename = path,
         palette = self.sprite.palettes[1]
     }
 
