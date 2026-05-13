@@ -212,24 +212,24 @@ function Snapshot:save()
     local frame_number = get_active_frame_number()
     local frame = self.sprite.frames[frame_number]
     
-    -- Create a new image with the sprite's full size
+    -- Create a new image in RGB mode for proper layer compositing
     local image = Image(ImageSpec{
         width = self.sprite.width,
         height = self.sprite.height,
-        colorMode = self.sprite.colorMode
+        colorMode = ColorMode.RGB
     })
     
     -- Draw each layer in the frame onto the image
     local function draw_layers(layers)
         for _, layer in ipairs(layers) do
-            if layer.isVisible then
+            if layer.isVisible and not layer.isReference then
                 if layer.isGroup then
                     -- Recursively draw layers within the group
                     draw_layers(layer.layers)
                 else
                     local cel = layer:cel(frame)
                     if cel then
-                        image:drawImage(cel.image, cel.position)
+                        image:drawImage(cel.image, cel.position, layer.opacity)
                     end
                 end
             end
